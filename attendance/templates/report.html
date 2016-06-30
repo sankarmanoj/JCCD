@@ -1,0 +1,127 @@
+{% load staticfiles %}
+<html>
+<head>
+  <script
+      src="https://code.jquery.com/jquery-2.2.4.min.js"
+      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+      crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="{% static "semantic/dist/semantic.min.css" %}">
+  <script src="{% static 'semantic/dist/semantic.min.js' %}"></script>
+  <script>
+$(document).ready(function()
+{
+    $('.ui.dropdown').dropdown();
+});
+var entrySubmit = function(token)
+{
+$.get("ajax/?token="+token+"&type=inlog",function(data)
+{
+  var inTime = String(data.inTime);
+  console.log(inTime);
+ $("#todaydesc").html('   <a style="color : green;"> Present</a> <br> In Time :'+inTime+"<br>");
+$("#todaybutton").html('  <div class = "fluid ui green " style=" color : green;">Entered Succesfully</div>');
+});
+
+};
+
+var exitSubmit = function(token){
+  $.get("ajax/?token="+token+"&type=outlog",function(data)
+{
+  var inTime = String(data.inTime);
+  var outTime = String(data.outTime);
+   $("#todaydesc").html('   <a style="color : green;"> Present</a> <br> In Time :'+inTime+"<br> Out Time : "+outTime);
+   $("#todaybutton").html('  <div class = "fluid ui green " style=" color : blue;">Exited Succesfully</div>');
+});
+};
+  </script>
+</head>
+<body>
+
+    <nav class="ui fixed menu inverted navbar">
+        <a href="http://www.janaagraha.org" class="brand item">Janagraaha</a>
+        <a href="/" class="item">Home</a>
+        <div class = "right menu">
+          <a href ="/logout/?next={{request.path}}" class = "item"> Logout </a>
+      </div>
+    </nav> <!-- end nav -->
+
+    <div class="ui one column center aligned grid" style="margin-top:50px;">
+      <div class="row">
+    <div class="column nine wide form-holder">
+      <div class="ui right floating label">
+        <h2 style = "overflow: hidden;white-space: nowrap;">
+          Time is {% now "g:i A"%}
+        </h2>
+      </div>
+    </div>
+    </div>
+      <form class="row" method="POST">
+        {% csrf_token %}
+        <div class="column four wide">
+          <select name="user" class="ui dropdown" id="select">
+            <option value="">Select User</option>
+            {% for user in searchedusers %}
+            <option value="{{user.pk}}">{{user.username}}</option>
+            {% endfor %}
+          </select>
+  </div>
+  <div class="column one wide">
+  <button class="ui button">Search</button>
+</div>
+</form>
+<div class="row">
+    <div class="column nine wide form-holder">
+      {% if selecteduser %}
+    <h3>Attendance for {{selecteduser.username}}</h3>
+    <div class="ui link cards">
+
+      {% for day in days %}
+  <div class="card">
+
+    <div class="content">
+      <div class="header">{{day.date}}</div>
+      <div class="meta">
+        {% if day.present %}
+        <a style="color : green;"> Present</a>
+        <div class="description">
+          In Time : {{day.inTime}}<br>
+          Out Time : {{day.outTime}}
+        </div>
+        {% else %}
+        <a style="color :red;">Absent</a>
+        {% endif %}
+      </div>
+
+    </div>
+    <div class="extra content">
+      {% if day.inTime and day.outTime %}
+      <h3 style>
+        Time Spent is {{ day.duration}}
+      </h3>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+
+    </div>
+    {% endif %}
+    </div>
+    </div>
+</div>
+
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <!-- Latest compiled and minified CSS -->
+
+    <script>
+    $('.ui.dropdown').dropdown();
+</script>
+</body>
+</html>
