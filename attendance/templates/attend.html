@@ -1,0 +1,98 @@
+{% load staticfiles %}
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static "semantic/dist/semantic.min.css" %}">
+  <script src="{% static 'semantic/dist/semantic.min.js' %}"></script>
+  <script>
+var entrySubmit = function(token)
+{
+
+
+}
+  </script>
+</head>
+<body>
+
+    <nav class="ui fixed menu inverted navbar">
+        <a href="http://www.janaagraha.org" class="brand item">Janagraaha</a>
+        <a href="/" class="item">Home</a>
+        <div class = "right menu">
+          <a href ="/logout/?next={{request.path}}" class = "item"> Logout </a>
+      </div>
+    </nav> <!-- end nav -->
+
+    <div class="ui one column center aligned grid" style="margin-top:50px;">
+    <div class="column nine wide form-holder">
+      <div class="ui right floating label">
+        <h2 style = "overflow: hidden;white-space: nowrap;">
+          Time is {% now "g:i A"%}
+        </h2>
+      </div>
+    <h3>Attendance for {{user.username}}</h3>
+    <div class="ui link cards">
+      <div class="card">
+
+        <div class="content">
+          <div class="header">{{today.date}} - Today</div>
+          <div class="meta">
+            <div class="description">
+              {% if today.inTime %}
+              In Time : {{today.inTime}}<br>
+              {% endif %}
+              {% if today.outTime %}
+              Out Time : {{today.outTime}}
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+        {% if not  today.inTime %}
+        <div class="extra content">
+          <button class = "fluid ui blue button" onclick="">Entry</button>
+        </div>
+        {% elif not  today.outTime %}
+        <div class="extra content">
+          <button class = "fluid ui green button" onclick="">Exit</button>
+        </div>
+        {% endif %}
+      </div>
+      {% for day in days %}
+  <div class="card">
+
+    <div class="content">
+      <div class="header">{{day.date}}</div>
+      <div class="meta">
+        {% if day.present %}
+        <a style="color : green;"> Present</a>
+        <div class="description">
+          In Time : {{day.inTime}}<br>
+          Out Time : {{day.outTime}}
+        </div>
+        {% else %}
+        <a style="color :red;">Absent</a>
+        {% endif %}
+      </div>
+
+    </div>
+    <div class="extra content">
+      <span class="right floated">
+        Joined in 2013
+      </span>
+      <span>
+        <i class="user icon"></i>
+        75 Friends
+      </span>
+    </div>
+  </div>
+  {% endfor %}
+
+</div>
+    </div>
+    </div>
+
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+</body>
+</body>
+</html>

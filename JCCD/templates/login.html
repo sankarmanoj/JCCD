@@ -1,0 +1,43 @@
+{% load staticfiles %}
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static "semantic/dist/semantic.min.css" %}">
+  <script src="{% static 'semantic/dist/semantic.min.js' %}"></script>
+
+</head>
+<body>
+
+    <nav class="ui fixed menu inverted navbar">
+        <a href="http://www.janaagraha.org" class="brand item">Janagraaha</a>
+        <a href="/" class = "item">Home</a>
+    </nav> <!-- end nav -->
+    <div class="ui one column center aligned grid" style="margin-top:50px;">
+    <div class="column six wide form-holder">
+      <h2 class="center aligned header form-head">Sign in</h2>
+      <form class="ui form" id="loginform" method="POST">
+        {% csrf_token %}
+        <input name="next" value="{{next}}" type="hidden">
+        <div class="field">
+          <label>User Name</label>
+          <input name="username" placeholder="User Name" type="text">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input name="password" placeholder="Password" type="password">
+        </div>
+        <button class="ui button green " type="submit">Submit</button>
+      </form>
+      {% if failed %}
+        <div class = "ui error message">
+            Invalid User Name or Password
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+</body>
+</body>
+</html>
