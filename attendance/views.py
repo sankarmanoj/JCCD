@@ -12,14 +12,13 @@ def subtractTime(end,start):
 def AttendanceReport(request):
     users = User.objects.all()
     if request.method=="GET":
-        users = User.objects.all()
-        return render(request,"report.html",{"users":users})
+        return render(request,"report.html",{"searchedusers":users})
     elif request.method=="POST":
         data = request.POST
         userpk = int(data["user"])
         user = User.objects.get(pk=userpk)
         days = attend.objects.filter(employee=user)
-        return render(request,"report.html",{"days":days,"user":user,"users":users})
+        return render(request,"report.html",{"days":days,"selecteduser":user,"searchedusers":users})
 @login_required(login_url="/login/")
 def attendanceHome(request):
     user = request.user
