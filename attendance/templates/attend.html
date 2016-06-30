@@ -1,14 +1,31 @@
 {% load staticfiles %}
 <html>
 <head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
   <link rel="stylesheet" type="text/css" href="{% static "semantic/dist/semantic.min.css" %}">
   <script src="{% static 'semantic/dist/semantic.min.js' %}"></script>
   <script>
 var entrySubmit = function(token)
 {
+$.get("ajax/?token="+token+"&type=inlog",function(data)
+{
+  var inTime = String(data.inTime);
+  console.log(inTime);
+ $("#todaydesc").html('   <a style="color : green;"> Present</a> <br> In Time :'+inTime+"<br>");
+$("#todaybutton").html('  <div class = "fluid ui green " style=" color : green;">Entered Succesfully</div>');
+});
 
+};
 
-}
+var exitSubmit = function(token){
+  $.get("ajax/?token="+token+"&type=outlog",function(data)
+{
+  var inTime = String(data.inTime);
+  var outTime = String(data.outTime);
+   $("#todaydesc").html('   <a style="color : green;"> Present</a> <br> In Time :'+inTime+"<br> Out Time : "+outTime);
+   $("#todaybutton").html('  <div class = "fluid ui green " style=" color : blue;">Exited Succesfully</div>');
+});
+};
   </script>
 </head>
 <body>
@@ -35,7 +52,7 @@ var entrySubmit = function(token)
         <div class="content">
           <div class="header">{{today.date}} - Today</div>
           <div class="meta">
-            <div class="description">
+            <div class="description" id="todaydesc">
               {% if today.inTime %}
               In Time : {{today.inTime}}<br>
               {% endif %}
@@ -47,12 +64,20 @@ var entrySubmit = function(token)
 
         </div>
         {% if not  today.inTime %}
-        <div class="extra content">
-          <button class = "fluid ui blue button" onclick="">Entry</button>
+        <div class="extra content" id="todaybutton">
+          <button class = "fluid ui blue button" onclick="entrySubmit('{{today.modifyToken}}')">Entry</button>
         </div>
         {% elif not  today.outTime %}
-        <div class="extra content">
-          <button class = "fluid ui green button" onclick="">Exit</button>
+        <div class="extra content" id="todaybutton">
+          <button class = "fluid ui green button" onclick="exitSubmit('{{today.modifyToken}}')">Exit</button>
+        </div>
+        {% else %}
+        <div class = "extra content">
+          {% if today.inTime and today.outTime %}
+          <h3 style>
+            Time Spent is  {{ today.duration}}
+          </h3>
+          {% endif %}
         </div>
         {% endif %}
       </div>
@@ -75,13 +100,11 @@ var entrySubmit = function(token)
 
     </div>
     <div class="extra content">
-      <span class="right floated">
-        Joined in 2013
-      </span>
-      <span>
-        <i class="user icon"></i>
-        75 Friends
-      </span>
+      {% if day.inTime and day.outTime %}
+      <h3 style>
+        Time Spent is {{ day.duration}}
+      </h3>
+      {% endif %}
     </div>
   </div>
   {% endfor %}
